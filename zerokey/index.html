@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroKey</title>
+    <style>
+       body {
+    font-family: 'Arial', sans-serif;
+    background: #010e1a;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.container {
+    width: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #000000;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    text-align: center;
+}
+
+#logo-container {
+    margin-bottom: 20px;
+}
+
+#logo {
+    width: 150px;
+    height: auto;
+}
+
+h1, #status {
+    color: #00ffcc;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc, 0 0 30px #00ffcc, 0 0 40px #00ffcc;
+}
+
+#status {
+    font-size: 18px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #00ffcc;
+    border: none;
+    border-radius: 5px;
+    color: #000000;
+    font-size: 16px;
+    cursor: pointer;
+    text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 15px #00ffcc;
+}
+
+button:hover {
+    background: #00cc99;
+}
+
+#progress-container {
+    width: 100%;
+    height: 20px;
+    background: #222;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+#progress-bar {
+    height: 100%;
+    background: red;
+    width: 0%;
+    border-radius: 5px;
+    transition: width 0.1s ease-in-out;
+}
+
+#terminateButton {
+    margin-top: 10px;
+    background: #ff3333;
+    text-shadow: 0 0 5px #ff3333, 0 0 10px #ff3333, 0 0 15px #ff3333;
+}
+
+#terminateButton:hover {
+    background: #cc2929;
+}
+</style
+</head>
+<body>
+    <div class="container">
+        <div id="logo-container">
+            <img src="zerokey.png" alt="ZeroKey Logo" id="logo">
+        </div>
+       
+        <div id="status">Enter a 4-digit password to crack:</div>
+        <input type="text" id="targetPassword" placeholder="Enter 4-digit password" maxlength="4">
+        <button id="startButton">Start Cracking</button>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <button id="terminateButton">Terminate</button>
+    </div>
+
+    <script>
+        let interval;
+        let i = 0;
+
+        function bruteForceCrack(targetPassword) {
+            const totalAttempts = 10000;
+            const progressBar = document.getElementById("progress-bar");
+            const statusText = document.getElementById("status");
+            interval = setInterval(() => {
+                if (i >= totalAttempts) {
+                    clearInterval(interval);
+                    statusText.textContent = "Password not found (this shouldn't happen with a 4-digit number).";
+                    progressBar.style.width = '100%';
+                    return;
+                }
+                let attempt = i.toString().padStart(4, '0');
+                const progress = Math.floor((i / totalAttempts) * 100);
+                progressBar.style.width = `${progress}%`;
+
+                // Visualize the matching digits in the UI
+                let matchVisual = attempt.split('').map((digit, index) => {
+                    return digit === targetPassword[index] ?
+                        `<span style="color: green">${digit}</span>` :
+                        `<span style="color: red">${digit}</span>`;
+                }).join('');
+
+                statusText.innerHTML = `Cracking: ${matchVisual}`;
+                
+                if (attempt === targetPassword) {
+                    clearInterval(interval);
+                    statusText.innerHTML = `Password cracked! The password is: <strong>${attempt}</strong>`;
+                    progressBar.style.width = '100%'; // Fill the progress bar when the password is cracked
+                }
+                i++;
+            }, 10); // Adjust the speed of brute-forcing (lower for faster, higher for slower)
+        }
+
+        document.getElementById("startButton").addEventListener("click", function() {
+            const targetPassword = document.getElementById("targetPassword").value;
+            // Validate input: 4-digit number
+            if (!/^\d{4}$/.test(targetPassword)) {
+                alert("Please enter a valid 4-digit password.");
+                return;
+            }
+
+            // Start brute-forcing the password
+            document.getElementById("status").textContent = "Starting brute force attack...";
+            bruteForceCrack(targetPassword);
+        });
+
+        document.getElementById("terminateButton").addEventListener("click", function() {
+            clearInterval(interval);
+            document.getElementById("status").textContent = "Process terminated.";
+            document.getElementById("progress-bar").style.width = '0%';
+        });
+    </script>
+</body>
+</html>
