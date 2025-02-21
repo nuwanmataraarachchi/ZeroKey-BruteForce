@@ -1,4 +1,4 @@
-# Password Cracker - Brute Force 4-Digit PIN Cracker
+# Password Cracker - Brute Force 4-Digit PIN Cracker Simulator
 
 This is a web-based brute-force password cracker designed to simulate the process of cracking a 4-digit PIN. The application uses a brute-force attack to try every possible combination (0000 to 9999) to match the user-inputted password.
 
