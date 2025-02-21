@@ -29,4 +29,4 @@ Before using the application, you need to have the following installed on your l
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/password-cracker.git
+   git clone https://github.com/your-username/ZeroKey-BruteForce
